@@ -109,6 +109,9 @@ async function loggedIn(list) {
     const hit = heads.find(([, n]) => want.includes(n));
     if (hit) map[k] = hit[0];
   }
+  // Both interest-cover columns in the Excel are the same figure; one Screener column fills both.
+  if (!map.int_cover_a && map.int_cover_b) map.int_cover_a = map.int_cover_b;
+  if (!map.int_cover_b && map.int_cover_a) map.int_cover_b = map.int_cover_a;
   const missing = Object.keys(ALIASES).filter(k => !map[k]);
   if (missing.length) console.log('Not on the index page (will be worked out from public pages):', missing.join(', '));
   const bySlug = {};
