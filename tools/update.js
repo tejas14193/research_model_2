@@ -19,7 +19,7 @@ const ALIASES = {
   np_latest_qtr: ['Net Profit latest quarter', 'NP Qtr Rs.Cr.'],
   div_payout_3y: ['Average dividend payout 3years', 'Avg Div Payout 3Yrs %'],
   div_yield: ['Dividend yield', 'Div Yld %'],
-  ret_1d: ['Return over 1day', '1day return %'],
+  ret_1d: ['1d return %', 'Return over 1day', '1day return %'],
   ret_1w: ['Return over 1week', 'ret 1 wk', '1wk return %'],
   ret_1m: ['Return over 1month', '1mth return %'],
   ret_3m: ['Return over 3months', '3mth return %'],
@@ -31,7 +31,7 @@ const ALIASES = {
   eps: ['EPS', 'EPS 12M Rs.'],
   ret_5y: ['Return over 5years', '5Yrs return %'],
   profit_growth_3y: ['Profit growth 3Years', 'Profit Var 3Yrs %'],
-  earnings_yield: ['Earnings yield', 'Earnings Yield %'],
+  earnings_yield: ['Earn Yld %', 'Earnings yield', 'Earnings Yield %'],
   piotroski: ['Piotroski score', 'Piotski Scr'],
   g_factor: ['G Factor'],
   opm: ['OPM', 'OPM %'],
@@ -43,11 +43,11 @@ const ALIASES = {
   net_cf_prev_year: ['Net cash flow preceding year', 'Net CF PY Rs.Cr.'],
   exports_pct: ['Exports percentage', 'Export %'],
   dma_50: ['DMA 50', '50 DMA Rs.'],
-  industry_pe: ['Industry PE', 'Ind PE'],
+  industry_pe: ['Ind PE', 'Industry PE', 'Ind PE'],
   pat_latest_qtr: ['Profit after tax latest quarter', 'PAT Qtr Rs.Cr.'],
   current_ratio: ['Current ratio'],
   int_cover_a: ['int coverage ratio', 'int cov ratio'],
-  roa: ['Return on assets', 'ROA 12M %'],
+  roa: ['ROA %', 'Return on assets', 'ROA 12M %'],
   sales: ['Sales', 'Sales Rs.Cr.'],
   pat_annual: ['Profit after tax', 'PAT 12M Rs.Cr.'],
   int_cover_b: ['Interest Coverage Ratio', 'Int Coverage'],
@@ -61,12 +61,12 @@ const ALIASES = {
   sales_growth_3y: ['Sales growth 3Years', 'Sales Var 3Yrs %'],
   avg_roe_3y: ['Average return on equity 3Years', 'ROE 3Yr %'],
   ebit: ['EBIT', 'EBIT 12M Rs.Cr.'],
-  opm_prev_year: ['OPM preceding year', 'OPM PY %'],
+  opm_prev_year: ['OPM Prev Ann %', 'OPM preceding year', 'OPM PY %'],
   np_prev_12m: ['Net profit preceding 12months', 'NP Prev 12M Rs.Cr.'],
-  fcf_prev_year: ['Free cash flow preceding year', 'Free Cash Flow PY Rs.Cr.'],
+  fcf_prev_year: ['FCF Prev Ann Rs.Cr.', 'Free cash flow preceding year', 'Free Cash Flow PY Rs.Cr.'],
   fcf_3y: ['Free cash flow 3years', 'Free Cash Flow 3Yrs Rs.Cr.'],
   inventory_turnover: ['Inventory turnover ratio', 'Inven TO'],
-  quick_ratio: ['Quick ratio']
+  quick_ratio: ['Quick Rat', 'Quick ratio']
 };
 const norm = s => String(s).toLowerCase().replace(/[^a-z0-9]/g, '');
 
@@ -115,7 +115,7 @@ async function loggedIn(list) {
   const missing = Object.keys(ALIASES).filter(k => !map[k]);
   if (missing.length) console.log('Not on the index page (will be worked out from public pages):', missing.join(', '));
   const bySlug = {};
-  for (const r of idx.rows) { const m = r.href.match(/\/company\/([^/]+)\//); if (m) bySlug[decodeURIComponent(m[1]).toUpperCase()] = r; }
+  for (const r of idx.rows) { const m = r.href.replace(/&amp;/g, '&').match(/\/company\/([^/]+)\//); if (m) bySlug[decodeURIComponent(m[1]).toUpperCase()] = r; }
   const out = {};
   for (const c of list) {
     const r = bySlug[c.symbol.toUpperCase()];
