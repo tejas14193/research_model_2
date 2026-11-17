@@ -43,6 +43,8 @@ tr.co{cursor:pointer}tr.co:hover{background:#faf9f6}
 .warn{background:#fff4d6;border-color:#f0d58a}
 .small{font-size:12px}
 .src{font-size:10px;color:#999;margin-left:3px}
+.xls{display:flex;align-items:center;gap:6px;background:#1a7f37;color:#fff;border:0;border-radius:8px;padding:8px 12px;font:inherit;font-weight:600;cursor:pointer;flex-shrink:0}
+.xls:disabled{opacity:.6}
 #tbl td:first-child{white-space:normal;min-width:120px}
 .detail table td,.detail table th{padding:5px 6px}
 @media (max-width:640px){
@@ -56,7 +58,10 @@ tr.co{cursor:pointer}tr.co:hover{background:#faf9f6}
 </head>
 <body>
 <header>
-  <h1>Research Model 2 · Red / Green / Black scorecard</h1>
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+    <h1>Research Model 2 · Red / Green / Black scorecard</h1>
+    <button id="xls" class="xls" title="Download as Excel"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" fill="#fff"/><path d="M3 9h18M3 15h18M9 3v18" stroke="#1a7f37" stroke-width="1.6"/></svg><span>Excel</span></button>
+  </div>
   <div class="sub" id="meta">Loading…</div>
 </header>
 <nav>
@@ -90,6 +95,7 @@ tr.co{cursor:pointer}tr.co:hover{background:#faf9f6}
   <section id="v-about" hidden><div class="card small" id="about"></div></section>
 </main>
 <script src="engine.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js" defer></script>
 <script>
 const $ = s => document.querySelector(s);
 let DEF, RULES, DATA, SNAP, filt = 'ALL', sortK = 'G', sortDir = -1, open = null;
@@ -186,6 +192,43 @@ $('#save').onclick = () => {
 };
 $('#reset').onclick = () => { localStorage.removeItem('rm2_rules'); RULES = structuredClone(DEF); rescore(); renderAll(); $('#msg').textContent = 'Back to default rules.'; };
 $('#copy').onclick = async () => { try { await navigator.clipboard.writeText(JSON.stringify(RULES, null, 2)); $('#msg').textContent = 'Copied.'; } catch { $('#msg').textContent = 'Copy failed.'; } };
+async function downloadExcel() {
+  const btn = $('#xls'); btn.disabled = true;
+  try {
+    if (!window.ExcelJS) throw new Error('Excel library did not load. Check your internet and try again.');
+    const wb = new ExcelJS.Workbook();
+    const ws = wb.addWorksheet('Scorecard', { views: [{ state: 'frozen', xSplit: 2, ySplit: 2 }] });
+    const d = RULES.decision;
+    const head = ['Company', 'Symbol', 'Industry', 'Price', 'Red', 'Green', 'Black', 'No data', 'Decision', ...RULES.params.map(p => p.label)];
+    ws.addRow([`Research Model 2 · data ${DATA.generated_at || ''} · rule: Red ≤ ${d.red_max}, Green ≥ ${d.green_min}, Black ≥ ${d.black_min}` + (custom() ? ' (your own rules)' : '')]);
+    const h = ws.addRow(head);
+    h.font = { bold: true }; h.alignment = { wrapText: true, vertical: 'top' }; h.height = 48;
+    const COL = { G: 'FF008000', R: 'FFFF0000', K: 'FF000000' };
+    const rows = DATA.companies.slice().sort((a, b) => b.s.cnt.G - a.s.cnt.G || a.s.cnt.R - b.s.cnt.R);
+    for (const c of rows) {
+      const r = ws.addRow([c.name, c.symbol, c.industry || '', c.values.price, c.s.cnt.R, c.s.cnt.G, c.s.cnt.K, c.s.cnt.missing, c.s.decision.label, ...RULES.params.map(p => c.values[p.key])]);
+      r.getCell(5).font = { color: { argb: COL.R }, bold: true };
+      r.getCell(6).font = { color: { argb: COL.G }, bold: true };
+      r.getCell(9).font = { bold: true, color: { argb: c.s.decision.label === d.labels.all3 ? COL.G : c.s.decision.label === d.labels.else ? COL.R : 'FF8A5A00' } };
+      RULES.params.forEach((p, i) => { const col = c.s.cells[p.key]; if (col) r.getCell(10 + i).font = { color: { argb: COL[col] }, bold: col !== 'K' }; });
+    }
+    ws.getColumn(1).width = 28; ws.getColumn(2).width = 13; ws.getColumn(3).width = 22;
+    for (let i = 4; i <= head.length; i++) ws.getColumn(i).width = i <= 9 ? 9 : 13;
+    ws.autoFilter = { from: { row: 2, column: 1 }, to: { row: 2, column: head.length } };
+    const rs = wb.addWorksheet('Rules');
+    rs.addRow(['Excel column', 'Parameter', 'Green if', 'Red if', 'Why']).font = { bold: true };
+    for (const p of RULES.params) rs.addRow([p.col, p.label, p.green || 'never', p.red || 'never', p.note]);
+    rs.addRow([]); rs.addRow(['Decision', `${d.labels.all3} when Red ≤ ${d.red_max}, Green ≥ ${d.green_min} and Black ≥ ${d.black_min}; ${d.labels.two} when two hold; else ${d.labels.else}.`]);
+    rs.getColumn(2).width = 40; rs.getColumn(3).width = 12; rs.getColumn(4).width = 12; rs.getColumn(5).width = 90;
+    const buf = await wb.xlsx.writeBuffer();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
+    a.download = `research_model_2_${DATA.date || 'data'}.xlsx`;
+    document.body.appendChild(a); a.click(); a.remove();
+  } catch (e) { alert(e.message); }
+  btn.disabled = false;
+}
+$('#xls').onclick = downloadExcel;
 load();
 </script>
 </body>
