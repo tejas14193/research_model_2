@@ -16,12 +16,13 @@ function keepCookies(res) {
   const list = typeof res.headers.getSetCookie === 'function' ? res.headers.getSetCookie() : [];
   for (const c of list) { const m = c.match(/^([^=]+)=([^;]*)/); if (m) cookieJar[m[1]] = m[2]; }
 }
-async function get(path, { tries = 3, json = false, headers = {} } = {}) {
+async function get(path, { tries = 3, json = false, headers = {}, anon = true } = {}) {
+  // Public pages are read without the login cookie, so they look the same as without login.
   const url = path.startsWith('http') ? path : BASE + path;
   for (let i = 1; i <= tries; i++) {
     try {
-      const res = await fetch(url, { headers: { 'User-Agent': UA, Referer: BASE + '/', Cookie: cookieHeader(), ...headers }, redirect: 'follow' });
-      keepCookies(res);
+      const res = await fetch(url, { headers: { 'User-Agent': UA, Referer: BASE + '/', ...(anon ? {} : { Cookie: cookieHeader() }), ...headers }, redirect: 'follow' });
+      if (!anon) keepCookies(res);
       if (res.status === 429) { await sleep(15000 * i); continue; }
       if (res.status === 404) return null;
       if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -208,7 +209,7 @@ async function publicValues(sym, opt = {}) {
     if (W.length) { v.ret_3y = cagr(3); v.ret_5y = cagr(5); }
   }
   if (wid) {
-    const ph = await get(`/api/company/${wid}/peers/`);
+    const ph = await get(`/api/company/${wid}/peers/`, { anon: true }); // logged-in view shows the account's own columns, without P/E
     if (ph) {
       const med = ph.match(/<tr[^>]*>(?:(?!<\/tr>)[\s\S])*?Median[\s\S]*?<\/tr>/);
       const head = [...(ph.match(/<tr[\s\S]*?<\/tr>/) || [''])[0].matchAll(/<th[^>]*>([\s\S]*?)<\/th>/g)].map(x => strip(x[1]));
@@ -231,7 +232,7 @@ async function publicValues(sym, opt = {}) {
 // ---------- logged-in path ----------
 async function login(email, password) {
   cookieJar = {};
-  const page = await get('/login/');
+  const page = await get('/login/', { anon: false });
   const tok = (page.match(/name="csrfmiddlewaretoken" value="([^"]+)"/) || [])[1];
   if (!tok) throw new Error('login page has no CSRF token');
   const body = new URLSearchParams({ csrfmiddlewaretoken: tok, username: email, password, next: '/' });
@@ -247,7 +248,7 @@ async function login(email, password) {
 async function indexTable(index) {
   const out = []; let head = null;
   for (let page = 1; page <= 20; page++) {
-    const html = await get(`/company/${index}/?page=${page}`);
+    const html = await get(`/company/${index}/?page=${page}`, { anon: false });
     if (!html) break;
     const t = html.match(/<table class="data-table[\s\S]*?<\/table>/);
     if (!t) break;
