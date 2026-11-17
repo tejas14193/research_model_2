@@ -1,0 +1,352 @@
+[
+ {
+  "symbol": "ADANIENT",
+  "name": "Adani Enterprises",
+  "industry": "Metals & Mining",
+  "isin": "INE423A01024",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "ADANIPORTS",
+  "name": "Adani Ports and Special Economic Zone",
+  "industry": "Services",
+  "isin": "INE742F01042",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "APOLLOHOSP",
+  "name": "Apollo Hospitals Enterprise",
+  "industry": "Healthcare",
+  "isin": "INE437A01024",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "ASIANPAINT",
+  "name": "Asian Paints",
+  "industry": "Consumer Durables",
+  "isin": "INE021A01026",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "AXISBANK",
+  "name": "Axis Bank",
+  "industry": "Financial Services",
+  "isin": "INE238A01034",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "BSE",
+  "name": "BSE",
+  "industry": "Financial Services",
+  "isin": "INE118H01025",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "BAJAJ-AUTO",
+  "name": "Bajaj Auto",
+  "industry": "Automobile and Auto Components",
+  "isin": "INE917I01010",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "BAJFINANCE",
+  "name": "Bajaj Finance",
+  "industry": "Financial Services",
+  "isin": "INE296A01032",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "BAJAJFINSV",
+  "name": "Bajaj Finserv",
+  "industry": "Financial Services",
+  "isin": "INE918I01026",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "BEL",
+  "name": "Bharat Electronics",
+  "industry": "Capital Goods",
+  "isin": "INE263A01024",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "BHARTIARTL",
+  "name": "Bharti Airtel",
+  "industry": "Telecommunication",
+  "isin": "INE397D01024",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "CIPLA",
+  "name": "Cipla",
+  "industry": "Healthcare",
+  "isin": "INE059A01026",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "COALINDIA",
+  "name": "Coal India",
+  "industry": "Oil Gas & Consumable Fuels",
+  "isin": "INE522F01014",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "DRREDDY",
+  "name": "Dr. Reddy's Laboratories",
+  "industry": "Healthcare",
+  "isin": "INE089A01031",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "EICHERMOT",
+  "name": "Eicher Motors",
+  "industry": "Automobile and Auto Components",
+  "isin": "INE066A01021",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "ETERNAL",
+  "name": "Eternal",
+  "industry": "Consumer Services",
+  "isin": "INE758T01015",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "GRASIM",
+  "name": "Grasim Industries",
+  "industry": "Construction Materials",
+  "isin": "INE047A01021",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "HCLTECH",
+  "name": "HCL Technologies",
+  "industry": "Information Technology",
+  "isin": "INE860A01027",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "HDFCBANK",
+  "name": "HDFC Bank",
+  "industry": "Financial Services",
+  "isin": "INE040A01034",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "HDFCLIFE",
+  "name": "HDFC Life Insurance Company",
+  "industry": "Financial Services",
+  "isin": "INE795G01014",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "HINDALCO",
+  "name": "Hindalco Industries",
+  "industry": "Metals & Mining",
+  "isin": "INE038A01020",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "HINDUNILVR",
+  "name": "Hindustan Unilever",
+  "industry": "Fast Moving Consumer Goods",
+  "isin": "INE030A01027",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "ICICIBANK",
+  "name": "ICICI Bank",
+  "industry": "Financial Services",
+  "isin": "INE090A01021",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "ITC",
+  "name": "ITC",
+  "industry": "Fast Moving Consumer Goods",
+  "isin": "INE154A01025",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "INFY",
+  "name": "Infosys",
+  "industry": "Information Technology",
+  "isin": "INE009A01021",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "INDIGO",
+  "name": "InterGlobe Aviation",
+  "industry": "Services",
+  "isin": "INE646L01027",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "JSWSTEEL",
+  "name": "JSW Steel",
+  "industry": "Metals & Mining",
+  "isin": "INE019A01038",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "JIOFIN",
+  "name": "Jio Financial Services",
+  "industry": "Financial Services",
+  "isin": "INE758E01017",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "KOTAKBANK",
+  "name": "Kotak Mahindra Bank",
+  "industry": "Financial Services",
+  "isin": "INE237A01036",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "LT",
+  "name": "Larsen & Toubro",
+  "industry": "Construction",
+  "isin": "INE018A01030",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "M&M",
+  "name": "Mahindra & Mahindra",
+  "industry": "Automobile and Auto Components",
+  "isin": "INE101A01026",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "MARUTI",
+  "name": "Maruti Suzuki India",
+  "industry": "Automobile and Auto Components",
+  "isin": "INE585B01010",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "MAXHEALTH",
+  "name": "Max Healthcare Institute",
+  "industry": "Healthcare",
+  "isin": "INE027H01010",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "NTPC",
+  "name": "NTPC",
+  "industry": "Power",
+  "isin": "INE733E01010",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "NESTLEIND",
+  "name": "Nestle India",
+  "industry": "Fast Moving Consumer Goods",
+  "isin": "INE239A01024",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "ONGC",
+  "name": "Oil & Natural Gas Corporation",
+  "industry": "Oil Gas & Consumable Fuels",
+  "isin": "INE213A01029",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "POWERGRID",
+  "name": "Power Grid Corporation of India",
+  "industry": "Power",
+  "isin": "INE752E01010",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "RELIANCE",
+  "name": "Reliance Industries",
+  "industry": "Oil Gas & Consumable Fuels",
+  "isin": "INE002A01018",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "SBILIFE",
+  "name": "SBI Life Insurance Company",
+  "industry": "Financial Services",
+  "isin": "INE123W01016",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "SHRIRAMFIN",
+  "name": "Shriram Finance",
+  "industry": "Financial Services",
+  "isin": "INE721A01047",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "SBIN",
+  "name": "State Bank of India",
+  "industry": "Financial Services",
+  "isin": "INE062A01020",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "SUNPHARMA",
+  "name": "Sun Pharmaceutical Industries",
+  "industry": "Healthcare",
+  "isin": "INE044A01036",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "TCS",
+  "name": "Tata Consultancy Services",
+  "industry": "Information Technology",
+  "isin": "INE467B01029",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "TATACONSUM",
+  "name": "Tata Consumer Products",
+  "industry": "Fast Moving Consumer Goods",
+  "isin": "INE192A01025",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "TMPV",
+  "name": "Tata Motors Passenger Vehicles",
+  "industry": "Automobile and Auto Components",
+  "isin": "INE155A01022",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "TATASTEEL",
+  "name": "Tata Steel",
+  "industry": "Metals & Mining",
+  "isin": "INE081A01020",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "TECHM",
+  "name": "Tech Mahindra",
+  "industry": "Information Technology",
+  "isin": "INE669C01036",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "TITAN",
+  "name": "Titan Company",
+  "industry": "Consumer Durables",
+  "isin": "INE280A01028",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "TRENT",
+  "name": "Trent",
+  "industry": "Consumer Services",
+  "isin": "INE849A01020",
+  "index": "NIFTY 50"
+ },
+ {
+  "symbol": "ULTRACEMCO",
+  "name": "UltraTech Cement",
+  "industry": "Construction Materials",
+  "isin": "INE481G01011",
+  "index": "NIFTY 50"
+ }
+]

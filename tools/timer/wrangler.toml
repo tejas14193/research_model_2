@@ -1,0 +1,10 @@
+name = "rm2-daily-timer"
+main = "worker.js"
+compatibility_date = "2026-11-01"
+workers_dev = true
+preview_urls = false
+keep_vars = true
+
+[triggers]
+# 12:50 UTC = 18:20 IST, Monday to Friday
+crons = ["50 12 * * 1-5"]

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Research Model 2 · Red / Green / Black scorecard</title>
+<style>
+:root{--bg:#f6f5f1;--card:#fff;--ink:#1d1d1b;--mute:#6b6a65;--line:#e4e2dc;--g:#1a7f37;--gbg:#e3f3e7;--r:#c62828;--rbg:#fbe5e5;--k:#2b2b2b;--kbg:#efeeea;--acc:#1f4e79}
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+header{padding:18px 16px 8px;max-width:1200px;margin:auto}
+h1{font-size:20px;margin:0 0 2px}
+.sub{color:var(--mute);font-size:13px}
+nav{display:flex;gap:6px;max-width:1200px;margin:10px auto 0;padding:0 16px;flex-wrap:wrap}
+nav button{border:1px solid var(--line);background:var(--card);padding:7px 12px;border-radius:18px;cursor:pointer;font:inherit}
+nav button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+main{max-width:1200px;margin:auto;padding:12px 16px 40px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 12px}
+.chip{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 12px;cursor:pointer}
+.chip b{font-size:18px;display:block}
+.chip.on{outline:2px solid var(--acc)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:12px}
+input[type=search]{width:100%;max-width:340px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font:inherit}
+table{border-collapse:collapse;width:100%}
+th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+th{font-size:12px;color:var(--mute);font-weight:600;cursor:pointer;position:sticky;top:0;background:var(--card)}
+td.n{text-align:right;font-variant-numeric:tabular-nums}
+.R{color:var(--r);font-weight:600}.G{color:var(--g);font-weight:600}.K{color:var(--k)}
+.cR{background:var(--rbg);color:var(--r)}.cG{background:var(--gbg);color:var(--g)}.cK{background:var(--kbg)}.cX{color:#aaa}
+.tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:600}
+.t-INVEST{background:var(--gbg);color:var(--g)}.t-WATCH{background:#fff4d6;color:#8a5a00}.t-AVOID{background:var(--rbg);color:var(--r)}
+.scroll{overflow:auto;max-height:75vh}
+tr.co{cursor:pointer}tr.co:hover{background:#faf9f6}
+.detail td{white-space:normal}
+.grid td,.grid th{font-size:12px;padding:4px 6px;text-align:right}
+.grid td:first-child,.grid th:first-child{text-align:left;position:sticky;left:0;background:var(--card);z-index:1}
+.grid th{writing-mode:vertical-rl;transform:rotate(180deg);height:150px;text-align:left;vertical-align:bottom}
+.rules input{width:90px;padding:4px 6px;border:1px solid var(--line);border-radius:6px;font:inherit}
+.rules td{white-space:normal;vertical-align:top}
+.note{color:var(--mute);font-size:12px}
+.btn{border:1px solid var(--acc);background:var(--acc);color:#fff;padding:7px 12px;border-radius:8px;cursor:pointer;font:inherit}
+.btn.o{background:#fff;color:var(--acc)}
+.warn{background:#fff4d6;border-color:#f0d58a}
+.small{font-size:12px}
+.src{font-size:10px;color:#999;margin-left:3px}
+#tbl td:first-child{white-space:normal;min-width:120px}
+.detail table td,.detail table th{padding:5px 6px}
+@media (max-width:640px){
+  .hm{display:none}
+  th,td{padding:7px 5px}
+  #tbl td:first-child{min-width:0}
+  .detail table td:nth-child(3),.detail table td:nth-child(4),.detail table th:nth-child(3),.detail table th:nth-child(4){display:none}
+  .detail table td{white-space:normal}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Research Model 2 · Red / Green / Black scorecard</h1>
+  <div class="sub" id="meta">Loading…</div>
+</header>
+<nav>
+  <button data-v="list" class="on">Companies</button>
+  <button data-v="grid">Full grid</button>
+  <button data-v="uncle">Vs uncle's Excel</button>
+  <button data-v="rules">Rules</button>
+  <button data-v="about">How it works</button>
+</nav>
+<main>
+  <section id="v-list">
+    <div class="chips" id="chips"></div>
+    <div class="card">
+      <input type="search" id="q" placeholder="Search company or symbol">
+      <div class="scroll" style="margin-top:8px"><table id="tbl"></table></div>
+    </div>
+  </section>
+  <section id="v-grid" hidden><div class="card scroll"><table class="grid" id="grid"></table></div></section>
+  <section id="v-uncle" hidden><div class="card"><p class="small">Uncle's hand counts from the Excel (Screener data of 28 Oct 2026) next to today's app counts. Numbers change with prices and new results, so small differences are normal.</p><div class="scroll"><table id="uncle"></table></div></div></section>
+  <section id="v-rules" hidden>
+    <div class="card warn small">Changes are saved in this browser only. Use <b>Copy rules</b> and send them to have them made the default for everyone.</div>
+    <div class="card">
+      <b>Decision</b>
+      <p class="small">INVEST when all three hold; WATCH when two hold; otherwise AVOID.</p>
+      Red ≤ <input id="d_red" type="number"> &nbsp; Green ≥ <input id="d_green" type="number"> &nbsp; Black ≥ <input id="d_black" type="number">
+    </div>
+    <div class="card scroll rules"><table id="rules"></table></div>
+    <button class="btn" id="save">Save</button> <button class="btn o" id="reset">Reset to default</button> <button class="btn o" id="copy">Copy rules</button>
+    <span id="msg" class="small"></span>
+  </section>
+  <section id="v-about" hidden><div class="card small" id="about"></div></section>
+</main>
+<script src="engine.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+let DEF, RULES, DATA, SNAP, filt = 'ALL', sortK = 'G', sortDir = -1, open = null;
+const fmt = v => v == null ? '–' : Math.abs(v) >= 1000 ? Math.round(v).toLocaleString('en-IN') : (+v).toFixed(2).replace(/\.?0+$/, '');
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+async function load() {
+  DEF = await (await fetch('rules.json', {cache:'no-store'})).json();
+  try { const saved = JSON.parse(localStorage.getItem('rm2_rules') || 'null'); RULES = saved && saved.version === DEF.version ? saved : structuredClone(DEF); } catch { RULES = structuredClone(DEF); }
+  try { DATA = await (await fetch('data/latest.json', {cache:'no-store'})).json(); } catch { DATA = {companies: []}; }
+  try { SNAP = await (await fetch('data/excel_2026-10-28.json')).json(); } catch { SNAP = []; }
+  rescore(); renderAll();
+}
+function rescore() { for (const c of DATA.companies) c.s = RGB.score(RULES, c.values); }
+function custom() { return JSON.stringify(RULES) !== JSON.stringify(DEF); }
+function renderAll() {
+  $('#meta').innerHTML = `Data: <b>${esc(DATA.generated_at || 'not fetched yet')}</b> · ${esc(DATA.source || '')} · ${DATA.companies.length} companies` + (custom() ? ' · <span class="R">using your own rules</span>' : '') + (DATA.failed && DATA.failed.length ? ` · <span class="R">${DATA.failed.length} failed</span>` : '');
+  if (DATA.source && /no login/.test(DATA.source)) $('#meta').innerHTML += '<div class="card warn small" style="margin-top:8px">No Screener login yet: up to 11 of 52 numbers are blank, so Black counts are lower than in uncle\'s sheet. Treat decisions as provisional.</div>';
+  chips(); list(); grid(); uncle(); rulesForm(); about();
+}
+function chips() {
+  const L = RULES.decision.labels, n = {ALL: DATA.companies.length};
+  for (const c of DATA.companies) n[c.s.decision.label] = (n[c.s.decision.label] || 0) + 1;
+  $('#chips').innerHTML = ['ALL', L.all3, L.two, L.else].map(k => `<div class="chip ${filt === k ? 'on' : ''}" data-f="${k}"><b>${n[k] || 0}</b>${k === 'ALL' ? 'All' : k}</div>`).join('');
+  document.querySelectorAll('.chip').forEach(e => e.onclick = () => { filt = e.dataset.f; chips(); list(); });
+}
+function rowsSorted() {
+  const q = $('#q').value.trim().toLowerCase();
+  let r = DATA.companies.filter(c => (filt === 'ALL' || c.s.decision.label === filt) && (!q || (c.name + ' ' + c.symbol).toLowerCase().includes(q)));
+  const key = c => sortK === 'name' ? c.name : sortK === 'price' ? c.values.price : sortK === 'dec' ? c.s.decision.met * 100 + c.s.cnt.G : c.s.cnt[sortK];
+  return r.sort((a, b) => (key(a) > key(b) ? 1 : key(a) < key(b) ? -1 : 0) * sortDir);
+}
+function list() {
+  const d = RULES.decision;
+  let h = `<tr><th data-k="name">Company</th><th data-k="price" class="hm">Price</th><th data-k="R" class="R">Red</th><th data-k="G" class="G">Green</th><th data-k="K">Black</th><th data-k="missing" class="hm">No data</th><th data-k="dec">Call</th></tr>`;
+  for (const c of rowsSorted()) {
+    const s = c.s, ok = s.decision.ok;
+    h += `<tr class="co" data-s="${esc(c.symbol)}"><td><b>${esc(c.name)}</b><br><span class="note">${esc(c.symbol)}<span class="hm"> · ${esc(c.industry || '')}</span> · ₹${fmt(c.values.price)}</span></td>
+      <td class="n hm">${fmt(c.values.price)}</td>
+      <td class="n R">${s.cnt.R}${ok[0] ? '' : ' ✗'}</td><td class="n G">${s.cnt.G}${ok[1] ? '' : ' ✗'}</td><td class="n">${s.cnt.K}${ok[2] ? '' : ' ✗'}</td>
+      <td class="n note hm">${s.cnt.missing}</td><td><span class="tag t-${s.decision.label}">${s.decision.label}</span></td></tr>`;
+    if (open === c.symbol) h += `<tr class="detail"><td colspan="7">${detail(c)}</td></tr>`;
+  }
+  $('#tbl').innerHTML = h;
+  document.querySelectorAll('#tbl th').forEach(th => th.onclick = () => { const k = th.dataset.k; sortDir = sortK === k ? -sortDir : (k === 'name' ? 1 : -1); sortK = k; list(); });
+  document.querySelectorAll('tr.co').forEach(tr => tr.onclick = () => { open = open === tr.dataset.s ? null : tr.dataset.s; list(); });
+}
+function detail(c) {
+  let h = `<div class="small" style="margin:4px 0 8px">Rule: Red ≤ ${RULES.decision.red_max}, Green ≥ ${RULES.decision.green_min}, Black ≥ ${RULES.decision.black_min}. ${c.basis ? 'Figures: ' + c.basis + '.' : ''} ${c.values.price_date ? 'Price date ' + c.values.price_date + '.' : ''} <a href="https://www.screener.in/company/${encodeURIComponent(c.symbol)}/consolidated/" target="_blank" rel="noopener">Open on Screener</a></div><table>`;
+  h += '<tr><th>Parameter</th><th>Value</th><th>Green if</th><th>Red if</th></tr>';
+  for (const p of RULES.params) {
+    const col = c.s.cells[p.key];
+    h += `<tr><td>${esc(p.label)}</td><td class="n c${col || 'X'}">${fmt(c.values[p.key])}${c.src && c.src[p.key] ? `<span class="src">${c.src[p.key] === 'login' ? 'S' : 'p'}</span>` : ''}</td><td class="note">${esc(p.green || 'never')}</td><td class="note">${esc(p.red || 'never')}</td></tr>`;
+  }
+  return h + '</table><p class="note">S = Screener (logged in), p = worked out from Screener public pages. – = no data, not counted.</p>';
+}
+function grid() {
+  let h = '<tr><th>Company</th><th>R</th><th>G</th><th>K</th>' + RULES.params.map(p => `<th title="${esc(p.note)}">${esc(p.label)}</th>`).join('') + '</tr>';
+  for (const c of DATA.companies.slice().sort((a, b) => b.s.cnt.G - a.s.cnt.G)) {
+    h += `<tr><td><b>${esc(c.symbol)}</b></td><td class="R">${c.s.cnt.R}</td><td class="G">${c.s.cnt.G}</td><td>${c.s.cnt.K}</td>` + RULES.params.map(p => `<td class="c${c.s.cells[p.key] || 'X'}">${fmt(c.values[p.key])}</td>`).join('') + '</tr>';
+  }
+  $('#grid').innerHTML = h;
+}
+function uncle() {
+  let h = '<tr><th>Company</th><th>Uncle R / G / K</th><th>Uncle note</th><th>App R / G / K (today)</th><th>App decision</th></tr>';
+  for (const u of SNAP) {
+    const c = DATA.companies.find(x => x.symbol === u.symbol);
+    h += `<tr><td>${esc(u.name)}</td><td class="n"><span class="R">${u.uncle.red}</span> / <span class="G">${u.uncle.green}</span> / ${u.uncle.black}</td><td>${esc(u.uncle.comment)}</td>` +
+      (c ? `<td class="n"><span class="R">${c.s.cnt.R}</span> / <span class="G">${c.s.cnt.G}</span> / ${c.s.cnt.K}</td><td><span class="tag t-${c.s.decision.label}">${c.s.decision.label}</span></td>` : '<td class="note">not in today\'s list</td><td></td>') + '</tr>';
+  }
+  $('#uncle').innerHTML = h;
+}
+function rulesForm() {
+  $('#d_red').value = RULES.decision.red_max; $('#d_green').value = RULES.decision.green_min; $('#d_black').value = RULES.decision.black_min;
+  $('#rules').innerHTML = '<tr><th>Parameter</th><th>Green if</th><th>Red if</th><th>Why</th></tr>' + RULES.params.map((p, i) =>
+    `<tr><td>${esc(p.label)}<div class="note">Excel column ${p.col}</div></td><td><input data-i="${i}" data-f="green" value="${esc(p.green)}"></td><td><input data-i="${i}" data-f="red" value="${esc(p.red)}"></td><td class="note">${esc(p.note)}</td></tr>`).join('');
+}
+function about() {
+  $('#about').innerHTML = `<p>This is a separate app from the Midcap Research Desk. It copies the method in uncle's Excel (tab "Nifty 50 analysis").</p>
+  <p>Every day after market close it reads ${RULES.params.length} numbers per company from Screener.in. Each number is coloured <span class="G">green</span>, <span class="K">black</span> or <span class="R">red</span> using the rules on the Rules tab, worked out from uncle's notes and his colouring (they match his colours on 99.5% of the cells in his sheet).</p>
+  <p>Then the colours are counted. <b>INVEST</b> when Red ≤ ${RULES.decision.red_max}, Green ≥ ${RULES.decision.green_min} and Black ≥ ${RULES.decision.black_min}; <b>WATCH</b> when two of the three hold; otherwise <b>AVOID</b>. A ✗ next to a count shows which test failed.</p>
+  <p>Blank numbers are not counted. Without a Screener login, 9 columns are blank (Piotroski score, G Factor, Exports %, ROE 5-year growth, the two free-cash-flow columns, current ratio, quick ratio, inventory turnover; for banks also OPM and OPM preceding year), so black counts come out lower and decisions are not comparable with uncle's. The rest are worked out from Screener's public pages: in a back-test against uncle's sheet of 28 Oct they gave the same colour 94% of the time.</p>
+  <p class="note">Rule output, not investment advice.</p>`;
+}
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('nav button').forEach(x => x.classList.toggle('on', x === b));
+  document.querySelectorAll('main > section').forEach(s => s.hidden = s.id !== 'v-' + b.dataset.v);
+});
+$('#q').oninput = list;
+$('#save').onclick = () => {
+  RULES.decision.red_max = +$('#d_red').value; RULES.decision.green_min = +$('#d_green').value; RULES.decision.black_min = +$('#d_black').value;
+  document.querySelectorAll('#rules input').forEach(i => RULES.params[+i.dataset.i][i.dataset.f] = i.value.trim());
+  localStorage.setItem('rm2_rules', JSON.stringify(RULES)); rescore(); renderAll(); $('#msg').textContent = 'Saved. Scores updated.';
+};
+$('#reset').onclick = () => { localStorage.removeItem('rm2_rules'); RULES = structuredClone(DEF); rescore(); renderAll(); $('#msg').textContent = 'Back to default rules.'; };
+$('#copy').onclick = async () => { try { await navigator.clipboard.writeText(JSON.stringify(RULES, null, 2)); $('#msg').textContent = 'Copied.'; } catch { $('#msg').textContent = 'Copy failed.'; } };
+load();
+</script>
+</body>
+</html>
