@@ -82,7 +82,9 @@ const pct = (a, b) => a == null || b == null || b === 0 ? null : (a / b - 1) * 1
 async function companyPage(sym) {
   // Consolidated first (that's what uncle's numbers match); fall back to standalone.
   let html = await get(`/company/${encodeURIComponent(sym)}/consolidated/`), basis = 'consolidated';
-  const empty = h => !h || !table(h, 'quarters') || !(row(table(h, 'quarters'), 'Net Profit') || []).some(v => v != null);
+  // Also fall back when the consolidated page has no top ratios (e.g. SBILIFE: consolidated
+  // page shows only standalone "(S)" columns and blank Market Cap / P/E / ROE / ROCE).
+  const empty = h => !h || !table(h, 'quarters') || !(row(table(h, 'quarters'), 'Net Profit') || []).some(v => v != null) || topRatios(h)['Market Cap'] == null;
   if (empty(html)) { html = await get(`/company/${encodeURIComponent(sym)}/`); basis = 'standalone'; }
   if (!html) throw new Error('no Screener page for ' + sym);
   return { html, basis };
