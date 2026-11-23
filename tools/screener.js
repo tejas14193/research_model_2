@@ -126,7 +126,7 @@ async function publicValues(sym, opt = {}) {
 
   let P = [], D = [], W = [];
   if (cid) {
-    const d = await get(`/api/company/${cid}/chart/?q=Price-DMA50&days=${asOf ? 400 + Math.round((Date.now() - Date.parse(asOf)) / 864e5) : 365}${cons ? '&consolidated=true' : ''}`, { json: true });
+    const d = await get(`/api/company/${cid}/chart/?q=Price-DMA50&days=${asOf ? 400 + Math.round((Date.now() - Date.parse(asOf)) / 864e5) : 400}${cons ? '&consolidated=true' : ''}`, { json: true });
     P = (d && d.datasets.find(x => x.metric === 'Price') || { values: [] }).values.map(x => [x[0], +x[1]]);
     D = (d && d.datasets.find(x => x.metric === 'DMA50') || { values: [] }).values.map(x => [x[0], +x[1]]);
     const w = await get(`/api/company/${cid}/chart/?q=Price&days=1900${cons ? '&consolidated=true' : ''}`, { json: true });
