@@ -168,7 +168,7 @@ async function main() {
     companies
   };
   if (only.length) { console.log(JSON.stringify(out, null, 1).slice(0, 4000)); return; }
-  if (companies.length < list.length * 0.8) {
+  if (companies.length < list.length * 0.8 || failed.length > list.length * 0.2) {
     console.error(`Only ${companies.length} of ${list.length} companies fetched; keeping yesterday's data.`);
     console.error(failed.join('\n'));
     process.exit(1);

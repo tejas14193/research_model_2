@@ -210,17 +210,24 @@ async function publicValues(sym, opt = {}) {
     const cagr = y => { const p0 = back(W, Math.round(365.25 * y)); return p0 && W.length ? (Math.pow(last[1] / p0, 1 / y) - 1) * 100 : null; };
     if (W.length) { v.ret_3y = cagr(3); v.ret_5y = cagr(5); }
   }
-  if (wid) {
-    const ph = await get(`/api/company/${wid}/peers/`, { anon: true }); // logged-in view shows the account's own columns, without P/E
+  {
+    // Since 25 Nov 2026 the peers table comes inside the company page, and /api/company/<wid>/peers/
+    // answers GET with HTTP 405 (POST only). Read the page's table; the API is only a fallback,
+    // and a peers failure costs just industry_pe, never the whole company.
+    let ph = (html.match(/id="peers-table-placeholder"[\s\S]*?<\/section>/) || [])[0] || null;
+    if ((!ph || !/Median/.test(ph)) && wid) { try { ph = await get(`/api/company/${wid}/peers/`, { anon: true, tries: 1 }); } catch (e) { ph = null; } }
     if (ph) {
       const med = ph.match(/<tr[^>]*>(?:(?!<\/tr>)[\s\S])*?Median[\s\S]*?<\/tr>/);
-      const head = [...(ph.match(/<tr[\s\S]*?<\/tr>/) || [''])[0].matchAll(/<th[^>]*>([\s\S]*?)<\/th>/g)].map(x => strip(x[1]));
+      // header = the row with the "Company" heading (big peer groups put a "KEY INSIGHTS" row above it)
+      const hrow = [...ph.matchAll(/<tr[\s\S]*?<\/tr>/g)].map(r => r[0]).find(r => /<th[^>]*>\s*Company\s*<\/th>/.test(r)) || (ph.match(/<tr[\s\S]*?<\/tr>/) || [''])[0];
+      const head = [...hrow.matchAll(/<th[^>]*>([\s\S]*?)<\/th>/g)].map(x => strip(x[1]));
       if (med) {
         const cells = [...med[0].matchAll(/<td[^>]*>([\s\S]*?)<\/td>/g)].map(x => strip(x[1]));
-        const i = head.indexOf('P/E');
-        // median row: one cell "Median: N Co." covers S.No + Company
+        const i = head.findIndex(h => /^P\/E(\s|$)/.test(h.replace(/&nbsp;/g, ' ')));
+        // old API table: one cell "Median: N Co." covers S.No + Company;
+        // page table (25 Nov 2026): checkbox column + own Median cell, one cell per header
         const off = cells.findIndex(c => /Median/.test(c));
-        if (i >= 0 && off >= 0) v.industry_pe = num(cells[off + i - 1]);
+        if (i >= 0 && off >= 0) v.industry_pe = num(cells[cells.length === head.length ? i : off + i - 1]);
       }
     }
   }
